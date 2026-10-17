@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 246 247 251;
+  --panel: 255 255 255;
+  --ink: 15 23 42;
+  --mute: 100 116 139;
+  --line: 226 232 240;
+  --soft: 238 242 255;
+  --accent: 79 70 229;
+  --accent-ink: 255 255 255;
+  --hl: 253 230 138;
+  --err: 220 38 38;
+  --shadow: rgb(15 23 42 / 0.07);
+  --glow: rgb(79 70 229 / 0.55);
+  --grad: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #0ea5e9 130%);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: 11 16 32;
+  --panel: 20 27 48;
+  --ink: 230 233 245;
+  --mute: 148 163 184;
+  --line: 38 48 77;
+  --soft: 28 37 71;
+  --accent: 129 140 248;
+  --accent-ink: 11 16 32;
+  --hl: 107 90 20;
+  --err: 248 113 113;
+  --shadow: rgb(0 0 0 / 0.4);
+  --glow: rgb(129 140 248 / 0.45);
+  --grad: linear-gradient(135deg, #818cf8 0%, #a78bfa 55%, #38bdf8 130%);
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  img,
+  svg,
+  video,
+  canvas {
+    max-width: 100%;
+  }
+  textarea,
+  input,
+  select {
+    max-width: 100%;
+  }
+  body {
+    @apply bg-bg font-sans text-base text-ink antialiased;
+    padding-top: calc(60px + env(safe-area-inset-top, 0px));
+    overflow-x: hidden; /* fallback for older browsers */
+    overflow-x: clip; /* never let one wide element make the whole page scroll sideways */
+  }
+  ::selection {
+    @apply bg-accent text-accent-ink;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-bg;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-[20px] border border-accent/15 bg-panel/85 p-4 shadow-card backdrop-blur-md sm:p-6;
+    background-image: linear-gradient(180deg, rgb(var(--accent) / 0.09), transparent 150px);
+  }
+  .field {
+    @apply w-full rounded-xl border border-line bg-panel px-3 py-3 font-serif text-base text-ink outline-none transition placeholder:text-mute focus:border-accent focus:ring-4 focus:ring-accent/20;
+  }
+  .label {
+    @apply mb-1.5 flex items-center gap-2.5 text-base font-bold tracking-tight;
+  }
+  .badge {
+    @apply grid h-6 w-6 shrink-0 place-items-center rounded-full bg-brand text-[13px] font-extrabold text-accent-ink shadow-glow;
+  }
+  .note {
+    @apply text-sm text-mute;
+  }
+  .chip-soft {
+    @apply rounded-full bg-soft px-3 py-1 text-[13px] font-semibold text-accent;
+  }
+  .skeleton {
+    @apply h-3 rounded-md bg-[length:200%_100%] animate-shimmer;
+    background-image: linear-gradient(90deg, rgb(var(--line)) 25%, rgb(var(--soft)) 50%, rgb(var(--line)) 75%);
+  }
+  .hl {
+    background: linear-gradient(transparent 45%, rgb(var(--hl)) 45%);
+    padding: 0 1px;
+  }
+}
+
+/* ---- CV printing: only the CV page is printed ---- */
+#cv-print-root {
+  display: none;
+}
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+  body > *:not(#cv-print-root) {
+    display: none !important;
+  }
+  #cv-print-root {
+    display: block !important;
+    width: 210mm;
+  }
+  #cv-print-root,
+  #cv-print-root * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
